@@ -83,3 +83,13 @@ const LearnerSubmissions = [
     },
   },
 ]
+// Main Function to Process Learner Data
+function getLearnerData(course, ag, submissions) {
+  const result = []
+  const currentDate = new Date()
+}
+
+// Ensure Assignment Group matches the Course ID
+if (course.id !== ag.course_id) {
+  throw new Error('Assignment group does not match course ID.')
+}
