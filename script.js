@@ -85,7 +85,6 @@ const LearnerSubmissions = [
 ]
 // Main Function to Process Learner Data
 function getLearnerData(course, ag, submissions) {
-  const result = []
   const currentDate = new Date()
 
   // Ensure Assignment Group matches the Course ID
@@ -94,7 +93,7 @@ function getLearnerData(course, ag, submissions) {
   }
 
   // Process each learner's submissions
-  submissions.reduce((acc, submission) => {
+  const result = submissions.reduce((acc, submission) => {
     const learnerId = submission.learner_id
     const assignment = ag.assignments.find(
       (a) => a.id === submission.assignment_id
@@ -105,22 +104,39 @@ function getLearnerData(course, ag, submissions) {
       return acc
     }
 
+    // Initialize learner entry in acc if it doesn't exist
+    if (!acc[learnerId]) {
+      acc[learnerId] = { id: learnerId, totalScore: 0, totalPoints: 0, avg: 0 }
+    }
+
     // Calculate score with late penalty if necessary
     let score = submission.submission.score
     const isLate =
       new Date(submission.submission.submitted_at) > new Date(assignment.due_at)
     if (isLate) score -= assignment.points_possible * 0.1 // Deduct 10% if late
 
-    // Calculate percentage score
+    // Calculate percentage score and store it by assignment ID
     const percentage = score / assignment.points_possible
+    acc[learnerId][assignment.id] = percentage // Store percentage by assignment ID
+
+    // Update totalScore and totalPoints for average calculation
+    acc[learnerId].totalScore += score
+    acc[learnerId].totalPoints += assignment.points_possible
+
+    // Calculate weighted average
+    acc[learnerId].avg = acc[learnerId].totalScore / acc[learnerId].totalPoints
 
     return acc
-  }, {}) // Provide an initial value for acc
+  }, {}) // Start with an empty object as the initial value
+
+  // Convert the result object to an array
+  return Object.values(result)
 }
-// Add or update learner data in accumulator
-if (!acc[learnerId]) {
-  acc[learnerId] = { id: learnerId, totalScore: 0, totalPoints: 0, avg: 0 }
+
+// Example Usage
+try {
+  const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions)
+  console.log(result)
+} catch (error) {
+  console.error('An error occurred:', error.message)
 }
-acc[learnerId][assignment.id] = percentage // Store percentage by assignment ID
-acc[learnerId].totalScore += score
-acc[learnerId].totalPoints += assignment.points_possible
