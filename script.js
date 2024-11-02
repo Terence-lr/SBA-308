@@ -87,9 +87,35 @@ const LearnerSubmissions = [
 function getLearnerData(course, ag, submissions) {
   const result = []
   const currentDate = new Date()
-}
 
-// Ensure Assignment Group matches the Course ID
-if (course.id !== ag.course_id) {
-  throw new Error('Assignment group does not match course ID.')
+  // Ensure Assignment Group matches the Course ID
+  if (course.id !== ag.course_id) {
+    throw new Error('Assignment group does not match course ID.')
+  }
+
+  // Process each learner's submissions
+  submissions.reduce((acc, submission) => {
+    const learnerId = submission.learner_id
+    const assignment = ag.assignments.find(
+      (a) => a.id === submission.assignment_id
+    )
+
+    // Skip irrelevant submissions (assignments not yet due)
+    if (!assignment || new Date(assignment.due_at) > currentDate) {
+      return acc
+    }
+
+    // Calculate score with late penalty if necessary
+    let score = submission.submission.score
+    const isLate =
+      new Date(submission.submission.submitted_at) > new Date(assignment.due_at)
+    if (isLate) score -= assignment.points_possible * 0.1 // Deduct 10% if late
+
+    // Calculate percentage score
+    const percentage = score / assignment.points_possible
+
+    // Continue processing (add other logic here if needed)
+
+    return acc
+  }, {}) // Provide an initial value for acc
 }
