@@ -1,33 +1,33 @@
 // Course Information
 const CourseInfo = {
-  id: 678,
+  courseId: 1,
   name: 'Advanced JavaScript',
 }
 
 // Assignment Group
 const AssignmentGroup = {
-  id: 98765,
+  groupId: 10,
   name: 'JavaScript Mastery',
-  course_id: 678,
-  group_weight: 30,
+  courseId: 1,
+  groupWeight: 30,
   assignments: [
     {
-      id: 101,
+      assignmentId: 101,
       name: 'Master Loops',
-      due_at: '2024-06-15',
-      points_possible: 100,
+      dueAt: '2024-06-15',
+      pointsPossible: 100,
     },
     {
-      id: 102,
+      assignmentId: 102,
       name: 'DOM Manipulation',
-      due_at: '2024-07-20',
-      points_possible: 200,
+      dueAt: '2024-07-20',
+      pointsPossible: 200,
     },
     {
-      id: 103,
+      assignmentId: 103,
       name: 'Async Programming',
-      due_at: '2024-12-01',
-      points_possible: 300,
+      dueAt: '2024-12-01',
+      pointsPossible: 300,
     },
   ],
 }
@@ -35,72 +35,73 @@ const AssignmentGroup = {
 // Learner Submission Data
 const LearnerSubmissions = [
   {
-    learner_id: 201,
-    assignment_id: 101,
+    learnerId: 201,
+    assignmentId: 101,
     submission: {
-      submitted_at: '2024-06-15',
-      score: 95,
+      submittedAt: '2024-06-15',
+      score: 100,
     },
   },
   {
-    learner_id: 201,
-    assignment_id: 102,
+    learnerId: 201,
+    assignmentId: 102,
     submission: {
-      submitted_at: '2024-07-21', // late
-      score: 180,
+      submittedAt: '2024-07-25', // late
+      score: 150,
     },
   },
   {
-    learner_id: 201,
-    assignment_id: 103,
+    learnerId: 201,
+    assignmentId: 103,
     submission: {
-      submitted_at: '2024-11-29',
-      score: 260,
+      submittedAt: '2024-11-29',
+      score: 280,
     },
   },
   {
-    learner_id: 202,
-    assignment_id: 101,
+    learnerId: 202,
+    assignmentId: 101,
     submission: {
-      submitted_at: '2024-06-13',
-      score: 85,
+      submittedAt: '2024-06-12',
+      score: 90,
     },
   },
   {
-    learner_id: 202,
-    assignment_id: 102,
+    learnerId: 202,
+    assignmentId: 102,
     submission: {
-      submitted_at: '2024-07-19',
-      score: 190,
+      submittedAt: '2024-07-19',
+      score: 200,
     },
   },
   {
-    learner_id: 202,
-    assignment_id: 103,
+    learnerId: 202,
+    assignmentId: 103,
     submission: {
-      submitted_at: '2024-12-03', // late
-      score: 250,
+      submittedAt: '2024-12-05', // late
+      score: 270,
     },
   },
 ]
+
 // Main Function to Process Learner Data
 function getLearnerData(course, ag, submissions) {
   const currentDate = new Date()
 
   // Ensure Assignment Group matches the Course ID
-  if (course.id !== ag.course_id) {
+  if (course.courseId !== ag.courseId) {
     throw new Error('Assignment group does not match course ID.')
   }
 
   // Process each learner's submissions
   const result = submissions.reduce((acc, submission) => {
-    const learnerId = submission.learner_id
+    const learnerId = submission.learnerId
     const assignment = ag.assignments.find(
-      (a) => a.id === submission.assignment_id
+      (a) => a.assignmentId === submission.assignmentId
     )
 
     // Skip irrelevant submissions (assignments not yet due)
-    if (!assignment || new Date(assignment.due_at) > currentDate) {
+    if (!assignment || new Date(assignment.dueAt) > currentDate) {
       return acc
     }
 
@@ -112,16 +113,16 @@ function getLearnerData(course, ag, submissions) {
     // Calculate score with late penalty if necessary
     let score = submission.submission.score
     const isLate =
-      new Date(submission.submission.submitted_at) > new Date(assignment.due_at)
-    if (isLate) score -= assignment.points_possible * 0.1 // Deduct 10% if late
+      new Date(submission.submission.submittedAt) > new Date(assignment.dueAt)
+    if (isLate) score -= assignment.pointsPossible * 0.1 // Deduct 10% if late
 
     // Calculate percentage score and store it by assignment ID
-    const percentage = score / assignment.points_possible
-    acc[learnerId][assignment.id] = percentage // Store percentage by assignment ID
+    const percentage = score / assignment.pointsPossible
+    acc[learnerId][assignment.assignmentId] = percentage // Store percentage by assignment ID
 
     // Update totalScore and totalPoints for average calculation
     acc[learnerId].totalScore += score
-    acc[learnerId].totalPoints += assignment.points_possible
+    acc[learnerId].totalPoints += assignment.pointsPossible
 
     // Calculate weighted average
     acc[learnerId].avg = acc[learnerId].totalScore / acc[learnerId].totalPoints
