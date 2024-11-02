@@ -114,8 +114,13 @@ function getLearnerData(course, ag, submissions) {
     // Calculate percentage score
     const percentage = score / assignment.points_possible
 
-    // Continue processing (add other logic here if needed)
-
     return acc
   }, {}) // Provide an initial value for acc
 }
+// Add or update learner data in accumulator
+if (!acc[learnerId]) {
+  acc[learnerId] = { id: learnerId, totalScore: 0, totalPoints: 0, avg: 0 }
+}
+acc[learnerId][assignment.id] = percentage // Store percentage by assignment ID
+acc[learnerId].totalScore += score
+acc[learnerId].totalPoints += assignment.points_possible
