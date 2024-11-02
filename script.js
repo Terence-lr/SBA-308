@@ -31,3 +31,55 @@ const AssignmentGroup = {
     },
   ],
 }
+
+// Learner Submission Data
+const LearnerSubmissions = [
+  {
+    learner_id: 201,
+    assignment_id: 101,
+    submission: {
+      submitted_at: '2024-06-15',
+      score: 95,
+    },
+  },
+  {
+    learner_id: 201,
+    assignment_id: 102,
+    submission: {
+      submitted_at: '2024-07-21', // late
+      score: 180,
+    },
+  },
+  {
+    learner_id: 201,
+    assignment_id: 103,
+    submission: {
+      submitted_at: '2024-11-29',
+      score: 260,
+    },
+  },
+  {
+    learner_id: 202,
+    assignment_id: 101,
+    submission: {
+      submitted_at: '2024-06-13',
+      score: 85,
+    },
+  },
+  {
+    learner_id: 202,
+    assignment_id: 102,
+    submission: {
+      submitted_at: '2024-07-19',
+      score: 190,
+    },
+  },
+  {
+    learner_id: 202,
+    assignment_id: 103,
+    submission: {
+      submitted_at: '2024-12-03', // late
+      score: 250,
+    },
+  },
+]
